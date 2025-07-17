@@ -14,3 +14,8 @@ pip-delete-this-directory.txt
 *.swp
 *.swo
 *~
+
+# VPN generated files
+vpn_proxy.pac
+*.cache
+*.log

@@ -1,6 +1,65 @@
 # PowerofCopilot
 This is completely developed by copilot btw
 
+## 🎨 Text-to-Image Generator
+
+A powerful web-based AI image generator that creates stunning images from text descriptions using state-of-the-art Stable Diffusion technology. Optimized for RTX 3060 (12GB VRAM) but works on any compatible hardware.
+
+### Features
+
+- 🖼️ **High-Quality Image Generation**: Creates 512x512 images using Stable Diffusion v1.5
+- 🎯 **Advanced Controls**: Customize inference steps, guidance scale, and negative prompts
+- ⚡ **Hardware Optimized**: Optimized for RTX 3060 with memory-efficient attention
+- 🌐 **Web Interface**: Clean, responsive web UI accessible from any browser
+- 🔒 **NSFW Support**: No content restrictions (use responsibly)
+- 💾 **Instant Results**: Images displayed directly in the browser
+
+### Quick Start
+
+1. **Install Dependencies**:
+```bash
+pip install -r requirements.txt
+```
+
+2. **Run the Web UI**:
+```bash
+python app.py
+```
+
+3. **Open Your Browser**:
+Navigate to `http://localhost:5000`
+
+4. **Generate Images**:
+- Enter your creative prompt
+- Optionally adjust advanced settings
+- Click "Generate Image" and wait 30-60 seconds
+
+### Advanced Usage
+
+The web interface includes advanced options for fine-tuning your generations:
+
+- **Negative Prompt**: Specify what you don't want in the image
+- **Inference Steps**: Higher values (20-50) = better quality but slower generation
+- **Guidance Scale**: How closely the AI follows your prompt (1-20)
+
+### Hardware Requirements
+
+- **Minimum**: Any CUDA-compatible GPU or CPU (slower)
+- **Recommended**: RTX 3060 (12GB VRAM) or better
+- **RAM**: 8GB+ (16GB+ recommended)
+- **Storage**: 5GB+ for model cache
+
+### Demo Mode
+
+For testing without installing AI models, use:
+```bash
+python app_demo.py
+```
+
+This runs a demo version that generates placeholder images with your prompt text.
+
+---
+
 ## Spotify Reader
 
 A Python tool that connects to your Spotify account and analyzes your listening habits to provide:

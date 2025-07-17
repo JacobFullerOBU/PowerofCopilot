@@ -14,3 +14,12 @@ pip-delete-this-directory.txt
 *.swp
 *.swo
 *~
+
+# Model cache and generated images
+.cache/
+models/
+*.pt
+*.bin
+*.safetensors
+generated_images/
+static/images/

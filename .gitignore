@@ -23,3 +23,7 @@ models/
 *.safetensors
 generated_images/
 static/images/
+# AI Chatbot cache and artifacts
+.transformers_cache/
+model_cache/
+*.log

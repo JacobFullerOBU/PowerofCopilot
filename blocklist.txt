@@ -1,0 +1,66 @@
+# VPN Privacy Blocklist
+# This file contains domains to block for privacy protection
+# Lines starting with # are comments
+# One domain per line
+
+# Major Ad Networks
+doubleclick.net
+googleadservices.com
+googlesyndication.com
+google-analytics.com
+googletagmanager.com
+connect.facebook.net
+
+# Amazon Ads
+amazon-adsystem.com
+adsystem.amazon.com
+
+# Microsoft Ads
+ads1.msn.com
+mads.amazon.com
+
+# Yahoo Ads
+ads.yahoo.com
+gemini.yahoo.com
+
+# Other Major Ad Networks
+adnxs.com
+adsafeprotected.com
+scorecardresearch.com
+quantserve.com
+outbrain.com
+taboola.com
+criteo.com
+
+# Social Media Trackers
+fbcdn.net
+facebook.com
+twitter.com
+linkedin.com
+pinterest.com
+
+# Analytics and Tracking
+mixpanel.com
+segment.com
+hotjar.com
+fullstory.com
+loggly.com
+bugsnag.com
+
+# Video Ad Networks
+youtube.com/pagead
+googlevideo.com/pagead
+imasdk.googleapis.com
+
+# Mobile Ad Networks
+admob.com
+applovin.com
+unity3d.com/stats
+
+# Common Malware/Suspicious Domains
+malware.com
+suspicious-site.net
+phishing-example.com
+
+# Add your own blocked domains below this line
+# Format: domain.com (without http:// or https://)

@@ -15,8 +15,15 @@ pip-delete-this-directory.txt
 *.swo
 *~
 
-# AI Chatbot cache and artifacts
+# Model cache and generated images
 .cache/
+models/
+*.pt
+*.bin
+*.safetensors
+generated_images/
+static/images/
+# AI Chatbot cache and artifacts
 .transformers_cache/
 model_cache/
 *.log

@@ -3,6 +3,401 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<<<<<<< HEAD
+    <title>Text-to-Image Generator</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #4a5568;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #718096;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #4a5568;
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .advanced-options {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .advanced-toggle {
+            background: none;
+            border: none;
+            color: #667eea;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            padding: 0;
+        }
+        
+        .advanced-toggle:hover {
+            text-decoration: underline;
+        }
+        
+        .advanced-content {
+            display: none;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+        }
+        
+        .generate-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .generate-btn:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .status {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .status.loading {
+            background: #fef5e7;
+            color: #744210;
+            border: 1px solid #f6ad55;
+        }
+        
+        .status.error {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 1px solid #f56565;
+        }
+        
+        .status.success {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 1px solid #48bb78;
+        }
+        
+        .result {
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        .result img {
+            max-width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            margin-bottom: 15px;
+        }
+        
+        .result-info {
+            background: #f7fafc;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+            color: #718096;
+        }
+        
+        .footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Text-to-Image Generator</h1>
+        <p class="subtitle">Transform your ideas into stunning images using AI</p>
+        
+        <div id="status" class="status" style="display: none;"></div>
+        
+        <form id="generateForm">
+            <div class="form-group">
+                <label for="prompt">✨ Your Creative Prompt:</label>
+                <textarea id="prompt" name="prompt" placeholder="Describe the image you want to create... Be creative and detailed!" required></textarea>
+                <small style="color: #718096;">Example: "A serene sunset over a mountain lake with purple clouds reflecting in the water"</small>
+            </div>
+            
+            <div class="advanced-options">
+                <button type="button" class="advanced-toggle" onclick="toggleAdvanced()">
+                    ⚙️ Advanced Options
+                </button>
+                <div id="advancedContent" class="advanced-content">
+                    <div class="form-group">
+                        <label for="negative_prompt">🚫 Negative Prompt (what to avoid):</label>
+                        <textarea id="negative_prompt" name="negative_prompt" placeholder="blurry, low quality, distorted, ugly"></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="steps">🔄 Inference Steps (20-50):</label>
+                            <input type="range" id="steps" name="steps" min="10" max="50" value="20" oninput="updateStepsValue(this.value)">
+                            <small>Current: <span id="stepsValue">20</span> (Higher = better quality, slower)</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="guidance">🎯 Guidance Scale (1-20):</label>
+                            <input type="range" id="guidance" name="guidance" min="1" max="20" step="0.5" value="7.5" oninput="updateGuidanceValue(this.value)">
+                            <small>Current: <span id="guidanceValue">7.5</span> (Higher = follows prompt more strictly)</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <button type="submit" class="generate-btn" id="generateBtn">
+                🚀 Generate Image
+            </button>
+        </form>
+        
+        <div id="result" class="result" style="display: none;"></div>
+        
+        <div class="footer">
+            <p>Powered by Stable Diffusion | Optimized for RTX 3060</p>
+            <p><a href="/spotify">🎵 Check out the Spotify Reader</a></p>
+        </div>
+    </div>
+
+    <script>
+        let isGenerating = false;
+
+        // Check model status on page load
+        window.addEventListener('load', checkModelStatus);
+
+        function checkModelStatus() {
+            fetch('/status')
+                .then(response => response.json())
+                .then(data => {
+                    const statusDiv = document.getElementById('status');
+                    const generateBtn = document.getElementById('generateBtn');
+                    
+                    if (data.model_loaded) {
+                        statusDiv.className = 'status success';
+                        statusDiv.innerHTML = `✅ AI Model Ready! Using ${data.device.toUpperCase()}`;
+                        statusDiv.style.display = 'block';
+                        generateBtn.disabled = false;
+                        
+                        setTimeout(() => {
+                            statusDiv.style.display = 'none';
+                        }, 3000);
+                    } else {
+                        statusDiv.className = 'status loading';
+                        statusDiv.innerHTML = '<span class="spinner"></span>Loading AI model, please wait...';
+                        statusDiv.style.display = 'block';
+                        generateBtn.disabled = true;
+                        
+                        // Check again in 5 seconds
+                        setTimeout(checkModelStatus, 5000);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error checking model status:', error);
+                    const statusDiv = document.getElementById('status');
+                    statusDiv.className = 'status error';
+                    statusDiv.innerHTML = '❌ Error connecting to AI model';
+                    statusDiv.style.display = 'block';
+                });
+        }
+
+        function toggleAdvanced() {
+            const content = document.getElementById('advancedContent');
+            const toggle = document.querySelector('.advanced-toggle');
+            
+            if (content.style.display === 'none' || content.style.display === '') {
+                content.style.display = 'block';
+                toggle.innerHTML = '⚙️ Hide Advanced Options';
+            } else {
+                content.style.display = 'none';
+                toggle.innerHTML = '⚙️ Advanced Options';
+            }
+        }
+
+        function updateStepsValue(value) {
+            document.getElementById('stepsValue').textContent = value;
+        }
+
+        function updateGuidanceValue(value) {
+            document.getElementById('guidanceValue').textContent = value;
+        }
+
+        document.getElementById('generateForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (isGenerating) return;
+            
+            const formData = new FormData(this);
+            const data = {
+                prompt: formData.get('prompt'),
+                negative_prompt: formData.get('negative_prompt'),
+                steps: parseInt(formData.get('steps')),
+                guidance: parseFloat(formData.get('guidance'))
+            };
+            
+            generateImage(data);
+        });
+
+        function generateImage(data) {
+            isGenerating = true;
+            const statusDiv = document.getElementById('status');
+            const generateBtn = document.getElementById('generateBtn');
+            const resultDiv = document.getElementById('result');
+            
+            // Show loading status
+            statusDiv.className = 'status loading';
+            statusDiv.innerHTML = '<span class="spinner"></span>Creating your masterpiece... This may take 30-60 seconds';
+            statusDiv.style.display = 'block';
+            
+            generateBtn.disabled = true;
+            generateBtn.innerHTML = '<span class="spinner"></span>Generating...';
+            
+            resultDiv.style.display = 'none';
+            
+            fetch('/generate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.error) {
+                    statusDiv.className = 'status error';
+                    statusDiv.innerHTML = `❌ ${result.error}`;
+                } else {
+                    statusDiv.className = 'status success';
+                    statusDiv.innerHTML = `✅ Image generated in ${result.generation_time}s!`;
+                    
+                    resultDiv.innerHTML = `
+                        <img src="${result.image}" alt="Generated Image">
+                        <div class="result-info">
+                            <strong>Prompt:</strong> ${result.prompt}<br>
+                            <strong>Generation Time:</strong> ${result.generation_time} seconds
+                        </div>
+                    `;
+                    resultDiv.style.display = 'block';
+                    
+                    // Hide success message after 3 seconds
+                    setTimeout(() => {
+                        statusDiv.style.display = 'none';
+                    }, 3000);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                statusDiv.className = 'status error';
+                statusDiv.innerHTML = '❌ Network error occurred';
+            })
+            .finally(() => {
+                isGenerating = false;
+                generateBtn.disabled = false;
+                generateBtn.innerHTML = '🚀 Generate Image';
+            });
+        }
+    </script>
+=======
     <title>AI Chatbot - Free & Unlimited</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
@@ -70,5 +465,6 @@
     </div>
 
     <script src="{{ url_for('static', filename='script.js') }}"></script>
+>>>>>>> main
 </body>
 </html>

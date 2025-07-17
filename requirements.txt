@@ -10,9 +10,3 @@ accelerate==0.24.0
 pillow==10.1.0
 numpy==1.24.3
 
-# AI Chatbot dependencies
-flask==2.3.3
-torch==2.0.1
-transformers==4.34.0
-accelerate==0.21.0
-safetensors==0.3.3

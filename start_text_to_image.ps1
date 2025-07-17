@@ -38,40 +38,40 @@ if ($LASTEXITCODE -eq 0) {
 } else {
     Write-Host "⚠️  AI dependencies not found"
     Write-Host ""
-    Write-Host "Would you like to:"
-    Write-Host "1) Install AI dependencies for full functionality (requires ~8GB download)"
-    Write-Host "2) Run in demo mode (generates placeholder images)"
-    Write-Host ""
-    $choice = Read-Host "Enter choice (1 or 2)"
+    Write-Host 'Would you like to:'
+    Write-Host '1) Install AI dependencies for full functionality (requires ~8GB download)'
+    Write-Host '2) Run in demo mode (generates placeholder images)'
+    Write-Host ''
+    $choice = Read-Host 'Enter choice (1 or 2)'
     switch ($choice) {
         '1' {
-            Write-Host "📥 Installing AI dependencies (this may take several minutes)..."
+            Write-Host 'Installing AI dependencies (this may take several minutes)...'
             python3 -m pip install torch torchvision diffusers transformers accelerate
             if ($LASTEXITCODE -eq 0) {
-                Write-Host "✅ AI dependencies installed successfully"
-                Write-Host ""
-                Write-Host "🚀 Starting Text-to-Image Generator (AI Mode)..."
-                Write-Host "Open http://localhost:5000 in your browser"
-                Write-Host "Note: Model loading may take a few minutes on first run"
+                Write-Host 'AI dependencies installed successfully'
+                Write-Host ''
+                Write-Host 'Starting Text-to-Image Generator (AI Mode)...'
+                Write-Host 'Open http://localhost:5000 in your browser'
+                Write-Host 'Note: Model loading may take a few minutes on first run'
                 python3 app.py
             } else {
-                Write-Host "❌ Failed to install AI dependencies. Running in demo mode..."
-                Write-Host ""
-                Write-Host "🚀 Starting Text-to-Image Generator (Demo Mode)..."
-                Write-Host "Open http://localhost:5000 in your browser"
+                Write-Host 'Failed to install AI dependencies. Running in demo mode...'
+                Write-Host ''
+                Write-Host 'Starting Text-to-Image Generator (Demo Mode)...'
+                Write-Host 'Open http://localhost:5000 in your browser'
                 python3 app_demo.py
             }
         }
         '2' {
-            Write-Host "🚀 Starting Text-to-Image Generator (Demo Mode)..."
-            Write-Host "Open http://localhost:5000 in your browser"
+            Write-Host 'Starting Text-to-Image Generator (Demo Mode)...'
+            Write-Host 'Open http://localhost:5000 in your browser'
             python3 app_demo.py
         }
         default {
-            Write-Host "Invalid choice. Starting demo mode..."
-            Write-Host ""
-            Write-Host "🚀 Starting Text-to-Image Generator (Demo Mode)..."
-            Write-Host "Open http://localhost:5000 in your browser"
+            Write-Host 'Invalid choice. Starting demo mode...'
+            Write-Host ''
+            Write-Host 'Starting Text-to-Image Generator (Demo Mode)...'
+            Write-Host 'Open http://localhost:5000 in your browser'
             python3 app_demo.py
         }
     }

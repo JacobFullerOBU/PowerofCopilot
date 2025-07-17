@@ -11,6 +11,8 @@ app = Flask(__name__)
 # Configuration
 app.config['UPLOAD_FOLDER'] = 'generated_videos'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
+app.config['SERVER_NAME'] = 'localhost:5000'
+app.config['PREFERRED_URL_SCHEME'] = 'http'
 
 # Ensure upload directory exists
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
@@ -90,52 +92,53 @@ def download_video(job_id):
 
 def generate_video_async(job_id, prompt, model_name, duration, resolution):
     """Generate video asynchronously"""
-    try:
-        # Update status
-        generation_status[job_id].update({
-            'status': 'loading_model',
-            'progress': 10,
-            'message': f'Loading {model_name} model...'
-        })
-        
-        # Import here to avoid blocking app startup
-        from video_generator import VideoGenerator
-        
-        generator = VideoGenerator()
-        
-        # Update status
-        generation_status[job_id].update({
-            'status': 'generating',
-            'progress': 30,
-            'message': 'Generating video from text...'
-        })
-        
-        # Generate video
-        video_path = generator.generate(
-            prompt=prompt,
-            model_name=model_name,
-            duration=duration,
-            resolution=resolution,
-            output_dir=app.config['UPLOAD_FOLDER'],
-            job_id=job_id,
-            progress_callback=lambda p: update_progress(job_id, p)
-        )
-        
-        # Update final status
-        generation_status[job_id].update({
-            'status': 'completed',
-            'progress': 100,
-            'message': 'Video generation completed!',
-            'video_path': video_path,
-            'download_url': url_for('download_video', job_id=job_id)
-        })
-        
-    except Exception as e:
-        generation_status[job_id].update({
-            'status': 'error',
-            'progress': 0,
-            'message': f'Error: {str(e)}'
-        })
+    with app.app_context():
+        try:
+            # Update status
+            generation_status[job_id].update({
+                'status': 'loading_model',
+                'progress': 10,
+                'message': f'Loading {model_name} model...'
+            })
+            
+            # Import here to avoid blocking app startup
+            from video_generator import VideoGenerator
+            
+            generator = VideoGenerator()
+            
+            # Update status
+            generation_status[job_id].update({
+                'status': 'generating',
+                'progress': 30,
+                'message': 'Generating video from text...'
+            })
+            
+            # Generate video
+            video_path = generator.generate(
+                prompt=prompt,
+                model_name=model_name,
+                duration=duration,
+                resolution=resolution,
+                output_dir=app.config['UPLOAD_FOLDER'],
+                job_id=job_id,
+                progress_callback=lambda p: update_progress(job_id, p)
+            )
+            
+            # Update final status
+            generation_status[job_id].update({
+                'status': 'completed',
+                'progress': 100,
+                'message': 'Video generation completed!',
+                'video_path': video_path,
+                'download_url': url_for('download_video', job_id=job_id)
+            })
+            
+        except Exception as e:
+            generation_status[job_id].update({
+                'status': 'error',
+                'progress': 0,
+                'message': f'Error: {str(e)}'
+            })
 
 def update_progress(job_id, progress):
     """Update generation progress"""

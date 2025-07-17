@@ -1,0 +1,25 @@
+.env
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Text-to-Image Generator cache and artifacts
+.cache/
+.transformers_cache/
+model_cache/
+*.log
+generated_images/
+diffusers_cache/
+huggingface_hub/

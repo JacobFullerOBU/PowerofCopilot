@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text-to-Image Generator - Free AI Art Creator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎨 Text-to-Image Generator</h1>
+            <p class="subtitle">Free • AI-Powered • High Quality</p>
+            <div class="status-bar">
+                <span id="status" class="status loading">Initializing...</span>
+            </div>
+        </header>
+
+        <main>
+            <div class="generator-container">
+                <div class="input-section">
+                    <div class="input-wrapper">
+                        <textarea 
+                            id="prompt-input" 
+                            placeholder="Describe the image you want to create... (e.g., 'A serene mountain landscape at sunset with a lake')"
+                            rows="3"
+                            maxlength="500"
+                        ></textarea>
+                        <button id="generate-btn" class="generate-button" title="Generate image">
+                            <span class="btn-text">🎨 Generate Image</span>
+                            <span class="btn-loading" style="display: none;">⏳ Generating...</span>
+                        </button>
+                    </div>
+                    
+                    <div class="controls">
+                        <div class="control-group">
+                            <label for="steps">Quality (Steps):</label>
+                            <input type="range" id="steps" min="10" max="50" value="20">
+                            <span id="steps-value">20</span>
+                        </div>
+                        <div class="control-group">
+                            <label for="guidance">Creativity:</label>
+                            <input type="range" id="guidance" min="1" max="15" step="0.5" value="7.5">
+                            <span id="guidance-value">7.5</span>
+                        </div>
+                        <div class="control-group">
+                            <label for="size">Size:</label>
+                            <select id="size">
+                                <option value="512x512" selected>512x512 (Square)</option>
+                                <option value="512x768">512x768 (Portrait)</option>
+                                <option value="768x512">768x512 (Landscape)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="input-footer">
+                        <span class="char-count"><span id="char-count">0</span>/500</span>
+                        <span class="tips">💡 Tip: Be descriptive! Include details about style, lighting, and mood</span>
+                    </div>
+                </div>
+
+                <div class="output-section">
+                    <div id="loading-indicator" class="loading-indicator" style="display: none;">
+                        <div class="spinner"></div>
+                        <p>Generating your image...</p>
+                        <small>This may take 30-60 seconds</small>
+                    </div>
+                    
+                    <div id="image-result" class="image-result" style="display: none;">
+                        <img id="generated-image" alt="Generated image">
+                        <div class="image-info">
+                            <p id="used-prompt"></p>
+                            <div class="image-actions">
+                                <button id="download-btn" class="action-btn">💾 Download</button>
+                                <button id="new-image-btn" class="action-btn">🔄 Generate New</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="placeholder" class="placeholder">
+                        <div class="placeholder-content">
+                            <span class="placeholder-icon">🖼️</span>
+                            <h3>Your AI-generated image will appear here</h3>
+                            <p>Enter a creative prompt above and click "Generate Image" to get started!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <div class="footer-content">
+                <p>🚀 <strong>Features:</strong> Free • AI-Powered • Unlimited • High Quality</p>
+                <p>💻 <strong>Tech:</strong> Stable Diffusion • Flask • Local Processing</p>
+                <p class="disclaimer">⚠️ This generator runs locally and may take time to load initially. Generated images are not stored permanently.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

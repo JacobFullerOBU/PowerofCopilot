@@ -72,6 +72,15 @@ PowerofCopilot/
 │       ├── script.js       # Frontend logic
 │       └── favicon.ico     # Browser icon
 │
+├── 🎨 Text-to-Image Generator
+│   ├── README.md           # Image generator documentation
+│   ├── image_generator.py  # Main generation script
+│   ├── web_interface.py    # Flask web server
+│   ├── config.py          # Configuration settings
+│   ├── models/            # AI model storage
+│   ├── templates/         # Web interface
+│   └── static/            # Generated images & assets
+│
 ├── 🎵 Spotify Reader (Original)
 │   ├── spotify_reader.py   # Spotify analysis tool
 │   ├── demo.py            # Demo data
@@ -238,6 +247,19 @@ This project is open source and available under the MIT License.
 
 ## 🎵 Additional Tools
 
+This repository includes several additional AI-powered tools:
+
+### 🎨 Text-to-Image Generator
+Generate stunning AI artwork from text descriptions with our **Text-to-Image Generator**:
+- **Advanced AI Models** - Stable Diffusion and custom models
+- **High-Quality Output** - Up to 1024x1024 resolution
+- **Style Control** - Multiple artistic styles and presets
+- **Local Processing** - Privacy-focused, no external APIs
+- **Web Interface** - Easy-to-use browser interface
+
+**[📖 View Text-to-Image Documentation →](./text_to_image/README.md)**
+
+### 🎵 Spotify Reader  
 This repository also includes a **Spotify Reader** tool for analyzing your music listening habits:
 
 ### Spotify Reader Features

@@ -1,0 +1,13 @@
+Flask==2.3.3
+torch==2.1.0
+torchvision==0.16.0
+diffusers==0.21.4
+transformers==4.35.2
+accelerate==0.24.1
+opencv-python==4.8.1.78
+Pillow==10.0.1
+numpy==1.24.3
+huggingface-hub==0.17.3
+xformers==0.0.22
+scipy==1.11.4
+safetensors==0.4.0

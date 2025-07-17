@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text to Video Generator - AI Powered</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1><i class="fas fa-video"></i> Text to Video Generator</h1>
+            <p class="subtitle">Transform your text into stunning videos with AI</p>
+        </header>
+
+        <main class="main-content">
+            <div class="generator-form">
+                <div class="form-group">
+                    <label for="prompt">
+                        <i class="fas fa-edit"></i> 
+                        Describe your video
+                    </label>
+                    <textarea 
+                        id="prompt" 
+                        placeholder="A beautiful sunset over a mountain landscape with birds flying..."
+                        rows="4"
+                        maxlength="500"
+                    ></textarea>
+                    <div class="char-counter">
+                        <span id="char-count">0</span>/500 characters
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="model">
+                            <i class="fas fa-brain"></i> 
+                            AI Model
+                        </label>
+                        <select id="model">
+                            <option value="zeroscope">Zeroscope v2 - High Quality</option>
+                            <option value="modelscope">ModelScope - Fast Generation</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="duration">
+                            <i class="fas fa-clock"></i> 
+                            Duration (seconds)
+                        </label>
+                        <select id="duration">
+                            <option value="2">2 seconds</option>
+                            <option value="3" selected>3 seconds</option>
+                            <option value="4">4 seconds</option>
+                            <option value="5">5 seconds</option>
+                            <option value="6">6 seconds</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="resolution">
+                            <i class="fas fa-expand-arrows-alt"></i> 
+                            Resolution
+                        </label>
+                        <select id="resolution">
+                            <option value="256x256">256×256 (Square)</option>
+                            <option value="512x512" selected>512×512 (Square)</option>
+                            <option value="576x320">576×320 (16:9)</option>
+                            <option value="1024x576">1024×576 (16:9 HD)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-info-circle"></i> 
+                            Estimated Time
+                        </label>
+                        <div class="time-estimate">
+                            <span id="time-estimate">~2-5 minutes</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="generate-btn" class="generate-btn" onclick="generateVideo()">
+                    <i class="fas fa-magic"></i>
+                    Generate Video
+                </button>
+            </div>
+
+            <!-- Progress Section -->
+            <div id="progress-section" class="progress-section" style="display: none;">
+                <div class="progress-header">
+                    <h3><i class="fas fa-cog fa-spin"></i> Generating Video</h3>
+                    <p id="progress-message">Initializing...</p>
+                </div>
+                <div class="progress-bar">
+                    <div id="progress-fill" class="progress-fill"></div>
+                </div>
+                <div class="progress-percentage">
+                    <span id="progress-percent">0%</span>
+                </div>
+            </div>
+
+            <!-- Result Section -->
+            <div id="result-section" class="result-section" style="display: none;">
+                <div class="result-header">
+                    <h3><i class="fas fa-check-circle"></i> Video Generated Successfully!</h3>
+                </div>
+                <div class="video-container">
+                    <video id="generated-video" controls>
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <div class="video-info">
+                    <p><strong>Prompt:</strong> <span id="result-prompt"></span></p>
+                    <p><strong>Model:</strong> <span id="result-model"></span></p>
+                    <p><strong>Duration:</strong> <span id="result-duration"></span> seconds</p>
+                    <p><strong>Resolution:</strong> <span id="result-resolution"></span></p>
+                </div>
+                <div class="action-buttons">
+                    <button id="download-btn" class="download-btn" onclick="downloadVideo()">
+                        <i class="fas fa-download"></i>
+                        Download Video
+                    </button>
+                    <button class="new-video-btn" onclick="startNew()">
+                        <i class="fas fa-plus"></i>
+                        Generate Another
+                    </button>
+                </div>
+            </div>
+
+            <!-- Error Section -->
+            <div id="error-section" class="error-section" style="display: none;">
+                <div class="error-header">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Generation Failed</h3>
+                </div>
+                <div class="error-message">
+                    <p id="error-text"></p>
+                </div>
+                <button class="retry-btn" onclick="startNew()">
+                    <i class="fas fa-redo"></i>
+                    Try Again
+                </button>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="features">
+                <div class="feature">
+                    <i class="fas fa-gift"></i>
+                    <span>100% Free</span>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-unlock"></i>
+                    <span>No Restrictions</span>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-star"></i>
+                    <span>High Quality</span>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-download"></i>
+                    <span>Downloadable</span>
+                </div>
+            </div>
+            <p>&copy; 2024 Text to Video Generator. Powered by AI.</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

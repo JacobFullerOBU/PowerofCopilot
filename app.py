@@ -10,76 +10,58 @@ import base64
 from flask import Flask, render_template, request, jsonify
 from PIL import Image
 import torch
-from diffusers import StableDiffusionPipeline
+import dnnlib
+import pickle
 import threading
 import time
 
 app = Flask(__name__)
 
-# Global variables for the model
-pipeline = None
+
+# Global variables for StyleGAN2
+G = None
 model_loaded = False
 loading_lock = threading.Lock()
 
 def load_model():
-    """Load the Stable Diffusion model optimized for RTX 3060"""
-    global pipeline, model_loaded
-    
+    """Load the StyleGAN2 model (.pkl)"""
+    global G, model_loaded
     with loading_lock:
         if model_loaded:
             return
-            
-        print("Loading Stable Diffusion model...")
-        
-        # Use a smaller, more efficient model for RTX 3060
-        model_id = "runwayml/stable-diffusion-v1-5"
-        
-        # Check if CUDA is available
-        device = "cuda" if torch.cuda.is_available() else "cpu"
-        print(f"Using device: {device}")
-        
+        print("Loading StyleGAN2 model...")
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         try:
-            # Load with optimizations for RTX 3060 (12GB VRAM)
-            pipeline = StableDiffusionPipeline.from_pretrained(
-                model_id,
-                torch_dtype=torch.float16 if device == "cuda" else torch.float32,
-                use_safetensors=True
-            )
-            
-            if device == "cuda":
-                pipeline = pipeline.to(device)
-                # Enable memory efficient attention for RTX 3060
-                pipeline.enable_attention_slicing()
-                pipeline.enable_xformers_memory_efficient_attention()
-            
+            # Path to your pre-trained StyleGAN2 model
+            model_path = "stylegan2-ffhq-config-f.pkl"  # Change to your .pkl file
+            with open(model_path, 'rb') as f:
+                G = pickle.load(f)['G_ema'].to(device)
             model_loaded = True
-            print("Model loaded successfully!")
-            
+            print("StyleGAN2 model loaded successfully!")
         except Exception as e:
-            print(f"Error loading model: {e}")
+            print(f"Error loading StyleGAN2 model: {e}")
             model_loaded = False
 
-def generate_image(prompt, negative_prompt="", num_inference_steps=20, guidance_scale=7.5):
-    """Generate image from text prompt"""
-    global pipeline
-    
-    if not model_loaded or pipeline is None:
+def generate_image(seed=None):
+    """Generate image from random latent vector using StyleGAN2"""
+    global G
+    if not model_loaded or G is None:
         return None, "Model not loaded"
-    
     try:
-        # Generate image with optimized settings for RTX 3060
-        with torch.autocast("cuda" if torch.cuda.is_available() else "cpu"):
-            image = pipeline(
-                prompt=prompt,
-                negative_prompt=negative_prompt,
-                num_inference_steps=num_inference_steps,
-                guidance_scale=guidance_scale,
-                height=512,  # Optimal for RTX 3060
-                width=512,   # Optimal for RTX 3060
-            ).images[0]
-        
-        return image, None
-        
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        # Set random seed for reproducibility
+        if seed is not None:
+            torch.manual_seed(seed)
+        # Generate random latent vector
+        z = torch.randn([1, G.z_dim], device=device)
+        label = torch.zeros([1, G.c_dim], device=device)
+        img = G(z, label, truncation_psi=0.7, noise_mode='const')
+        # Convert to PIL Image
+        img = (img.clamp(-1,1)+1)/2
+        img = img.mul(255).add_(0.5).clamp(0,255).to(torch.uint8)
+        img = img[0].permute(1,2,0).cpu().numpy()
+        pil_img = Image.fromarray(img, 'RGB')
+        return pil_img, None
     except Exception as e:
         return None, f"Error generating image: {str(e)}"
 
@@ -106,33 +88,25 @@ def status():
 
 @app.route('/generate', methods=['POST'])
 def generate():
-    """Generate image from text prompt"""
+    """Generate image from StyleGAN2 latent vector (optionally with seed)"""
     if not model_loaded:
         return jsonify({'error': 'Model not loaded yet. Please wait and try again.'}), 503
-    
     data = request.get_json()
-    prompt = data.get('prompt', '').strip()
-    negative_prompt = data.get('negative_prompt', '').strip()
-    steps = int(data.get('steps', 20))
-    guidance = float(data.get('guidance', 7.5))
-    
-    if not prompt:
-        return jsonify({'error': 'Prompt is required'}), 400
-    
-    # Generate image
+    seed = data.get('seed', None)
+    if seed is not None:
+        try:
+            seed = int(seed)
+        except:
+            seed = None
     start_time = time.time()
-    image, error = generate_image(prompt, negative_prompt, steps, guidance)
+    image, error = generate_image(seed)
     generation_time = time.time() - start_time
-    
     if error:
         return jsonify({'error': error}), 500
-    
-    # Convert to base64 for web display
     image_data = image_to_base64(image)
-    
     return jsonify({
         'image': image_data,
-        'prompt': prompt,
+        'seed': seed,
         'generation_time': round(generation_time, 2)
     })
 
@@ -149,14 +123,12 @@ def spotify_redirect():
     """
 
 if __name__ == '__main__':
-    # Start loading the model in a separate thread
+    # Start loading the StyleGAN2 model in a separate thread
     loading_thread = threading.Thread(target=load_model)
     loading_thread.daemon = True
     loading_thread.start()
-    
     # Run Flask app
-    print("Starting Text-to-Image Web UI...")
+    print("Starting StyleGAN2 Web UI...")
     print("Open http://localhost:5000 in your browser")
     print("Note: Model loading may take a few minutes on first run")
-    
     app.run(debug=True, host='0.0.0.0', port=5000)

@@ -9,7 +9,6 @@ googleadservices.com
 googlesyndication.com
 google-analytics.com
 googletagmanager.com
-facebook.com/tr
 connect.facebook.net
 
 # Amazon Ads
@@ -34,10 +33,11 @@ taboola.com
 criteo.com
 
 # Social Media Trackers
-fbcdn.net/tr
-twitter.com/i/adsct
-linkedin.com/analytics
-pinterest.com/ct
+fbcdn.net
+facebook.com
+twitter.com
+linkedin.com
+pinterest.com
 
 # Analytics and Tracking
 mixpanel.com

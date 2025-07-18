@@ -24,9 +24,13 @@ def load_model():
         return
     print("Loading DreamShaper Stable Diffusion model...")
     try:
-        pipe = StableDiffusionPipeline.from_single_file(MODEL_PATH, torch_dtype=torch.float16)
-        pipe = pipe.to("cuda" if torch.cuda.is_available() else "cpu")
-        print("DreamShaper model loaded successfully!")
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        if device == "cuda":
+            pipe = StableDiffusionPipeline.from_single_file(MODEL_PATH, torch_dtype=torch.float16)
+        else:
+            pipe = StableDiffusionPipeline.from_single_file(MODEL_PATH, torch_dtype=torch.float32)
+        pipe = pipe.to(device)
+        print(f"DreamShaper model loaded successfully on {device}!")
     except Exception as e:
         print(f"Error loading DreamShaper model: {e}")
         pipe = None
@@ -77,6 +81,9 @@ def index():
         <li>The generated image will appear below the prompt box.</li>
         <li>To try a new prompt, simply enter new text and click <b>Generate</b> again.</li>
     </ol>
+    <div style='color:red; font-weight:bold;'>
+        ⚠️ Safety checker is disabled. This app is for private/local use only. Do not expose unfiltered results to the public. See <a href='https://github.com/huggingface/diffusers/pull/254' target='_blank'>license info</a>.
+    </div>
     <form method="post" action="/generate" id="genform" onsubmit="return false;">
         <input type="text" name="prompt" placeholder="Enter your prompt" style="width:300px;">
         <button type="button" onclick="generateImage()">Generate</button>

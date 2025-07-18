@@ -8,13 +8,14 @@ import os
 import io
 import base64
 from flask import Flask, request, jsonify
+
+app = Flask(__name__)
 from PIL import Image
 import torch
 from diffusers import StableDiffusionPipeline
 
 
-# Path to DreamShaper model (update filename as needed)
-MODEL_PATH = os.path.join(os.path.dirname(__file__), "dreamshaper.safetensors")
+MODEL_PATH = os.path.join(os.path.dirname(__file__), "dreamshaper_8.safetensors")
 pipe = None
 
 def load_model():
@@ -64,9 +65,42 @@ def status():
         'cuda_available': torch.cuda.is_available()
     })
 
-@app.route('/spotify')
-def spotify_redirect():
-    return "<h1>Spotify Reader</h1><p>Original functionality available via command line.</p>"
+
+@app.route('/')
+def index():
+    return """
+    <h1>DreamShaper Text-to-Image Generator</h1>
+    <h2>How to Use</h2>
+    <ol>
+        <li>Enter a descriptive prompt in the box below (e.g., <i>a futuristic cityscape at sunset</i>).</li>
+        <li>Click <b>Generate</b> to create an image using the DreamShaper model.</li>
+        <li>The generated image will appear below the prompt box.</li>
+        <li>To try a new prompt, simply enter new text and click <b>Generate</b> again.</li>
+    </ol>
+    <form method="post" action="/generate" id="genform" onsubmit="return false;">
+        <input type="text" name="prompt" placeholder="Enter your prompt" style="width:300px;">
+        <button type="button" onclick="generateImage()">Generate</button>
+    </form>
+    <div id="result"></div>
+    <script>
+    function generateImage() {
+        var prompt = document.querySelector('input[name=\"prompt\"]').value;
+        fetch('/generate', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({prompt: prompt})
+        })
+        .then(r => r.json())
+        .then(data => {
+            if(data.image) {
+                document.getElementById('result').innerHTML = '<img src=\"data:image/png;base64,' + data.image + '\" style=\"max-width:512px;\">';
+            } else {
+                document.getElementById('result').innerText = data.error || 'Error generating image';
+            }
+        });
+    }
+    </script>
+    """
 
 if __name__ == '__main__':
     print("Starting Stable Diffusion Web UI (DreamShaper)...")

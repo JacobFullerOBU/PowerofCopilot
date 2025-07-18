@@ -22,67 +22,52 @@ app = Flask(__name__)
 G = None
 model_loaded = False
 loading_lock = threading.Lock()
+from flask import Flask, render_template, request, jsonify
+from PIL import Image
 
-def load_model():
-    """Load the StyleGAN2 model (.pkl)"""
-    global G, model_loaded
-    with loading_lock:
         if model_loaded:
             return
         print("Loading StyleGAN2 model...")
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        try:
-            # Path to your pre-trained StyleGAN2 model
-            model_path = "stylegan2-ffhq-config-f.pkl"  # Change to your .pkl file
+pipe = None
             with open(model_path, 'rb') as f:
-                G = pickle.load(f)['G_ema'].to(device)
-            model_loaded = True
-            print("StyleGAN2 model loaded successfully!")
-        except Exception as e:
-            print(f"Error loading StyleGAN2 model: {e}")
-            model_loaded = False
-
-def generate_image(seed=None):
-    """Generate image from random latent vector using StyleGAN2"""
-    global G
-    if not model_loaded or G is None:
+def load_model():
+    global pipe
+    if pipe is not None:
+        return
+    print("Loading DreamShaper Stable Diffusion model...")
+    try:
+        pipe = StableDiffusionPipeline.from_single_file(MODEL_PATH, torch_dtype=torch.float16)
+        pipe = pipe.to("cuda" if torch.cuda.is_available() else "cpu")
+        print("DreamShaper model loaded successfully!")
+    except Exception as e:
+        print(f"Error loading DreamShaper model: {e}")
+        pipe = None
+        z = torch.randn([1, G.z_dim], device=device)
+def generate_image(prompt):
+    global pipe
+    if pipe is None:
         return None, "Model not loaded"
     try:
-        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        # Set random seed for reproducibility
-        if seed is not None:
-            torch.manual_seed(seed)
-        # Generate random latent vector
-        z = torch.randn([1, G.z_dim], device=device)
-        label = torch.zeros([1, G.c_dim], device=device)
-        img = G(z, label, truncation_psi=0.7, noise_mode='const')
-        # Convert to PIL Image
-        img = (img.clamp(-1,1)+1)/2
-        img = img.mul(255).add_(0.5).clamp(0,255).to(torch.uint8)
-        img = img[0].permute(1,2,0).cpu().numpy()
-        pil_img = Image.fromarray(img, 'RGB')
-        return pil_img, None
+        result = pipe(prompt, num_inference_steps=30)
+        img = result.images[0]
+        return img, None
     except Exception as e:
-        return None, f"Error generating image: {str(e)}"
+        return None, str(e)
 
-def image_to_base64(image):
-    """Convert PIL image to base64 string for web display"""
-    buffer = io.BytesIO()
-    image.save(buffer, format='PNG')
-    img_str = base64.b64encode(buffer.getvalue()).decode()
-    return f"data:image/png;base64,{img_str}"
-
-@app.route('/')
-def index():
-    """Main page with text-to-image form"""
-    return render_template('index.html')
-
-@app.route('/status')
-def status():
-    """Check if model is loaded"""
-    return jsonify({
-        'model_loaded': model_loaded,
-        'device': 'cuda' if torch.cuda.is_available() else 'cpu',
+@app.route('/generate', methods=["POST"])
+def generate():
+    data = request.get_json()
+    prompt = data.get("prompt", "")
+    load_model()
+    img, error = generate_image(prompt)
+    if img is None:
+        return jsonify({"error": error}), 500
+    # Convert image to base64
+    buffered = io.BytesIO()
+    img.save(buffered, format="PNG")
+    img_str = base64.b64encode(buffered.getvalue()).decode()
+    return jsonify({"image": img_str})
         'cuda_available': torch.cuda.is_available()
     })
 

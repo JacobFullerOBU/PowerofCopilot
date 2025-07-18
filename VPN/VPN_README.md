@@ -21,40 +21,40 @@ A free, local VPN proxy server that provides privacy protection by:
 ## Quick VPN Setup
 
 1. **Start the VPN server:**
-   ```bash
-   python3 vpn_runner.py start
+   ```powershell
+   python VPN/vpn_runner.py start
    ```
 
 2. **Configure your browser:**
-   ```bash
-   python3 vpn_client.py setup
+   ```powershell
+   python VPN/vpn_client.py setup
    ```
 
 3. **Test privacy protection:**
-   ```bash
-   python3 vpn_client.py test
+   ```powershell
+   python VPN/vpn_client.py test
    ```
 
 ## VPN Usage
 
 ### Starting the VPN Server
 
-```bash
+```powershell
 # Start with default settings (port 8888)
-python3 vpn_runner.py start
+python VPN/vpn_runner.py start
 
 # Start on custom port
-python3 vpn_runner.py start 9999
+python VPN/vpn_runner.py start 9999
 
 # Start directly with server script
-python3 vpn_server.py [port]
+python VPN/vpn_server.py [port]
 ```
 
 ### Browser Configuration
 
 **Quick Setup:**
-```bash
-python3 vpn_client.py setup
+```powershell
+python VPN/vpn_client.py setup
 ```
 
 **Manual Chrome/Edge Setup:**
@@ -71,24 +71,24 @@ python3 vpn_client.py setup
 
 ### VPN Client Commands
 
-```bash
+```powershell
 # Show browser setup instructions
-python3 vpn_client.py setup
+python VPN/vpn_client.py setup
 
 # Generate PAC file for automatic configuration
-python3 vpn_client.py pac
+python VPN/vpn_client.py pac
 
 # Test VPN server connection
-python3 vpn_client.py test
+python VPN/vpn_client.py test
 
 # Show privacy testing guide
-python3 vpn_client.py privacy
+python VPN/vpn_client.py privacy
 
 # Show how to disable proxy
-python3 vpn_client.py disable
+python VPN/vpn_client.py disable
 
 # Check VPN status
-python3 vpn_client.py status
+python VPN/vpn_client.py status
 ```
 
 ## Privacy Protection Details
